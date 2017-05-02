@@ -38,4 +38,4 @@ List of used ports: \
 9042 - Cassandra \
 9092,7203 - Kafka
 
-You can change port by editing Vagrantfile.
+You can change ports by editing Vagrantfile.
