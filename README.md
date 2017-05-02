@@ -1,7 +1,7 @@
 ### Deploy SJ via Vagrant
 At first install vagrant and virtualbox. You can do it by official instruction: https://www.vagrantup.com/docs/installation/ and https://www.virtualbox.org/wiki/Downloads
 
-Clone git repository
+Clone git repository:
 ```
 git clone https://github.com/bwsw/sj-demo-vagrant.git
 cd sj-demo-vagrant
