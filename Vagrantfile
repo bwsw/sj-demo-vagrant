@@ -18,7 +18,6 @@ Vagrant.configure(2) do |config|
   config.vm.network :forwarded_port, guest: 9092, host: 9092, auto_correct: true
   config.vm.network :forwarded_port, guest: 7203, host: 7203, auto_correct: true
   config.vm.network :forwarded_port, guest: 3000, host: 3000, auto_correct: true
-  config.vm.network :forwarded_port, guest: 9042, host: 9042, auto_correct: true
   config.vm.network :forwarded_port, guest: 3001, host: 3001, auto_correct: true
   config.vm.network :forwarded_port, guest: 3002, host: 3002, auto_correct: true
   config.vm.network :forwarded_port, guest: 3003, host: 3003, auto_correct: true
@@ -26,7 +25,8 @@ Vagrant.configure(2) do |config|
   config.vm.network :forwarded_port, guest: 9300, host: 9300, auto_correct: true
   config.vm.network :forwarded_port, guest: 5601, host: 5601, auto_correct: true
 
-  config.vm.provision :shell, inline: "echo vm.max_map_count = 262144 >> /etc/sysctl.conf
+  config.vm.provision :shell, inline: "sudo sysctl -w vm.max_map_count=262144"
+  config.vm.provision :shell, inline: "echo vm.max_map_count = 262144 >> /etc/sysctl.conf"
 
   config.vm.provision "shell", path: "bootstrap.sh", keep_color: true
 end

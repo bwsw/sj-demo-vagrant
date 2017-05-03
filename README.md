@@ -36,7 +36,6 @@ List of used ports:
 9200,9300 - Elasticsearch
 5601 - Kibana
 3000-3003 - Aerospike
-9042 - Cassandra
 9092,7203 - Kafka
 
 You can change port by editing 

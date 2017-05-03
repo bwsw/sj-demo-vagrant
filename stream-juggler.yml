@@ -105,15 +105,6 @@ services:
       timeout: 10s
       retries: 2
 
-
-# CASSANDRA SERVICE
-  cassandra:
-    image: cassandra
-    ports:
-      - "9042:9042"
-    networks:
-      - sj
-
 # KAFKA SERVICE
   kafka:
     image: ches/kafka

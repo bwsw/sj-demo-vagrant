@@ -60,7 +60,6 @@ docker pull kibana:5.3.0
 
 echo "Run Docker Stack Mesos"
 echo ""
-# sudo sysctl -w vm.max_map_count=262144
 sudo docker swarm init
 sudo docker stack deploy -c stream-juggler.yml sj
 sleep 60
