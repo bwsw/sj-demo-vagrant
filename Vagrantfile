@@ -24,6 +24,7 @@ Vagrant.configure(2) do |config|
   config.vm.network :forwarded_port, guest: 9200, host: 9200, auto_correct: true
   config.vm.network :forwarded_port, guest: 9300, host: 9300, auto_correct: true
   config.vm.network :forwarded_port, guest: 5601, host: 5601, auto_correct: true
+  config.vm.network :forwarded_port, guest: 31071, host: 31071, auto_correct: true
 
   config.vm.provision :shell, inline: "sudo sysctl -w vm.max_map_count=262144"
   config.vm.provision :shell, inline: "echo vm.max_map_count = 262144 >> /etc/sysctl.conf"
