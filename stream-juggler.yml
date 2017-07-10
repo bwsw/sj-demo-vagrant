@@ -120,17 +120,6 @@ services:
       - sj
       - mesos
 
-# AEROSPIKE SERVICE
-  aerospike:
-    image: aerospike
-    ports:
-      - "3000:3000"
-      - "3001:3001"
-      - "3002:3002"
-      - "3003:3003"
-    networks:
-      - sj
-
 # ELASTICSEARCH SERVICE
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:5.1.1
