@@ -52,11 +52,10 @@ docker pull mesosphere/mesos-slave:1.1.1
 docker pull mesosphere/marathon
 docker pull mongo
 docker pull bwsw/sj-rest:dev
-docker pull cassandra
 docker pull ches/kafka
-docker pull aerospike
 docker pull docker.elastic.co/elasticsearch/elasticsearch:5.3.0
 docker pull kibana:5.3.0
+docker pull bwsw/tstreams-transaction-server
 
 echo "Run Docker Stack Mesos"
 echo ""

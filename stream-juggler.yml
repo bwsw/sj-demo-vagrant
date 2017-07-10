@@ -103,7 +103,7 @@ services:
       test: ["CMD", "curl", "-f", "http://0.0.0.0:8080/v1/providers"]
       interval: 5s
       timeout: 10s
-      retries: 2
+      retries: 5
 
 # KAFKA SERVICE
   kafka:
@@ -157,7 +157,7 @@ services:
 
 # TSTREAMS TRANSACTION SERVICE
   tts:
-    image: bwsw/tstreams-transaction-server:develop
+    image: bwsw/tstreams-transaction-server
     ports:
       - "31071:31071"
     depends_on:
