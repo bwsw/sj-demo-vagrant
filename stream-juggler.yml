@@ -3,7 +3,7 @@ services:
 
 # ZOOKEEPER SERVICE 
   zookeeper:
-    image: "zookeeper"
+    image: zookeeper
     environment:
       - ZOO_MY_ID=1
       - ZOO_SERVERS=0.0.0.0:2888:3888
@@ -23,15 +23,16 @@ services:
       - "5050:5050"
     networks:
       - mesos
+      - sj
     environment:
       - MESOS_CLUSTER=stream-juggler
-      - MESOS_HOST=${HOST_IP:-0.0.0.0}
+      - MESOS_HOST=${HOST_IP:-master}
       - MESOS_PORT=5050
       - MESOS_ZK=zk://zookeeper:2181/mesos
       - MESOS_QUORUM=1
       - MESOS_LOG_DIR=/var/log/mesos
       - MESOS_WORK_DIR=/var/tmp/mesos
-      - MESOS_HOSTNAME=${HOST_IP:-0.0.0.0}
+      - MESOS_HOSTNAME=192.168.172.17
   
 # SLAVE SERVICE
   slave:
@@ -42,32 +43,38 @@ services:
       - "--launcher=posix"
     networks:
       - mesos
+      - sj
     ports:
       - "5051:5051"
+      - "31500-32000:31500-32000"
     environment:
       - MESOS_PORT=5051
       - MESOS_MASTER=zk://zookeeper:2181/mesos
       - MESOS_CONTAINERIZERS=docker,mesos
       - MESOS_LOG_DIR=/var/log/mesos
-      - MESOS_RESOURCES=cpus:2;mem:2048;disk:1024;ports:[27017-27017,8888-8888,9042-9042,9092-9092,7203-7203,3000-3003,9200-9200,9300-9300,5601-5601,31000-32000]
+      - MESOS_RESOURCES=cpus:4;mem:4096;disk:1024;ports:[31500-32000]
       - MESOS_WORK_DIR=/var/tmp/mesos
-      - MESOS_HOSTNAME=192.168.1.188
+      - MESOS_HOSTNAME=192.168.172.17
       - MESOS_SLAVE_PARAMS="--launcher=posix"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
+      - "/usr/lib/jvm/java-8-oracle:/usr/lib/jvm/java-7-openjdk-amd64"
 
 # MARATHON SERVICE
   marathon:
-    image: mesosphere/marathon
+    image: mesosphere/marathon:v1.3.5
     depends_on:
       - master
     networks:
       - mesos
+      - sj
     command:
       - "--master=zk://zookeeper:2181/mesos"
       - "--zk=zk://zookeeper:2181/marathon"
     ports: 
       - "8080:8080"
+    environment:
+      - JAVA_HOME
     healthcheck:
       test: ["CMD", "curl", "-f", "http://0.0.0.0:8080"]
       interval: 5s
@@ -148,12 +155,15 @@ services:
   tts:
     image: bwsw/tstreams-transaction-server
     ports:
-      - "31071:31071"
+      - "31071:8080"
     depends_on:
       - zookeeper
     networks:
       - sj
       - mesos
+    environment:
+      - HOST=192.168.172.17
+      - PORT0=31071
     volumes:
       - "/vagrant/config.properties:/etc/conf/config.properties"
 

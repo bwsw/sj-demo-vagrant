@@ -8,6 +8,7 @@ Vagrant.configure(2) do |config|
   end
 
   config.vm.box = "ubuntu/xenial64"
+  config.vm.network "private_network", ip: "192.168.172.17"
 
   config.vm.network :forwarded_port, guest: 8080, host: 8080, auto_correct: true
   config.vm.network :forwarded_port, guest: 5050, host: 5050, auto_correct: true
@@ -26,8 +27,13 @@ Vagrant.configure(2) do |config|
   config.vm.network :forwarded_port, guest: 5601, host: 5601, auto_correct: true
   config.vm.network :forwarded_port, guest: 31071, host: 31071, auto_correct: true
 
-  config.vm.provision :shell, inline: "sudo sysctl -w vm.max_map_count=262144"
-  config.vm.provision :shell, inline: "echo vm.max_map_count = 262144 >> /etc/sysctl.conf"
+  for i in 31500..32000
+      config.vm.network :forwarded_port, guest: i, host: i, auto_correct: false
+  end
+
+
+  config.vm.provision :shell, inline: "echo vm.max_map_count = 262144 >> /etc/sysctl.conf && sysctl -p"
 
   config.vm.provision "shell", path: "bootstrap.sh", keep_color: true
+
 end
