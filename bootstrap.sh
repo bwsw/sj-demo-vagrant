@@ -17,12 +17,7 @@ echo "#########################################"
 echo "Install dependencies...                 #"
 echo "#########################################"
 echo ""
-
-#export LANGUAGE=en_US.UTF-8
-#export LANG=en_US.UTF-8
-#export LC_ALL=en_US.UTF-8
-#locale-gen en_US.UTF-8
-#dpkg-reconfigure locales
+sudo apt-get update
 
 sudo apt-get -y install \
      apt-transport-https \
@@ -37,7 +32,7 @@ sudo add-apt-repository \
 		 stable"
 
 sudo apt-get update
-sudo apt-get -y install docker-ce
+
 sudo apt-get -y install openjdk-8-jdk
 sudo apt-get -y install git
 sudo apt-get -y install openjdk-8*
@@ -57,7 +52,7 @@ echo "#########################################"
 echo "INIT DOCKER SWARM                       #"
 echo "#########################################"
 echo ""
-sudo docker swarm init --advertise-addr 192.168.172.17
+#sudo docker swarm init --advertise-addr 192.168.172.17
 echo ""
 
 
@@ -65,13 +60,13 @@ echo "#########################################"
 echo "Download and preparing sj-platform      #"
 echo "#########################################"
 echo ""
-git clone -b develop https://github.com/bwsw/sj-platform.git /vagrant/sj-platform
-cd sj-platform
-sbt sj-mesos-framework/assembly
-sbt sj-input-streaming-engine/assembly
-sbt sj-regular-streaming-engine/assembly
-sbt sj-output-streaming-engine/assembly
-cd ..
+#git clone -b develop https://github.com/bwsw/sj-platform.git /vagrant/sj-platform
+#cd sj-platform
+#sbt sj-mesos-framework/assembly
+#sbt sj-input-streaming-engine/assembly
+#sbt sj-regular-streaming-engine/assembly
+#sbt sj-output-streaming-engine/assembly
+#cd ..
 echo ""
 
 
@@ -79,26 +74,11 @@ echo "#########################################"
 echo "Download and preparing sj-fping-demo    #"
 echo "#########################################"
 echo ""
-git clone -b develop  https://github.com/bwsw/sj-fping-demo.git /vagrant/sj-fping-demo
-cd sj-fping-demo
-sbt assembly
-cd ..
+#git clone -b develop  https://github.com/bwsw/sj-fping-demo.git /vagrant/sj-fping-demo
+#cd sj-fping-demo
+#sbt assembly
+#cd ..
 echo ""
-
-
-#echo ""
-#echo "#########################################"
-#echo "Get and configure sj-platform           #"
-#echo "#########################################"
-#echo ""
-#wget -O /vagrant/sj-mesos-framework_$SCALA_VERSION-$SJ_VERSION.jar https://oss.sonatype.org/content/repositories/snapshots/com/bwsw/sj-mesos-framework_$SCALA_VERSION/$SJ_VERSION/sj-mesos-framework_$SCALA_VERSION-$SJ_VERSION.jar
-#echo ""
-#wget -O /vagrant/sj-input-streaming-engine_$SCALA_VERSION-$SJ_VERSION.jar https://oss.sonatype.org/content/repositories/snapshots/com/bwsw/sj-input-streaming-engine_$SCALA_VERSION/$SJ_VERSION/sj-input-streaming-engine_$SCALA_VERSION-$SJ_VERSION.jar
-#echo ""
-#wget -O /vagrant/sj-regular-streaming-engine_$SCALA_VERSION-$SJ_VERSION.jar https://oss.sonatype.org/content/repositories/snapshots/com/bwsw/sj-regular-streaming-engine_$SCALA_VERSION/$SJ_VERSION/sj-regular-streaming-engine_$SCALA_VERSION-$SJ_VERSION.jar
-#echo ""
-#wget -O /vagrant/sj-output-streaming-engine_$SCALA_VERSION-$SJ_VERSION.jar https://oss.sonatype.org/content/repositories/snapshots/com/bwsw/sj-output-streaming-engine_$SCALA_VERSION/$SJ_VERSION/sj-output-streaming-engine_$SCALA_VERSION-$SJ_VERSION.jar
-
 
 
 echo "#########################################"
@@ -112,7 +92,7 @@ docker pull mesosphere/marathon:v1.3.5
 docker pull mongo
 docker pull bwsw/sj-rest:dev
 docker pull ches/kafka
-docker pull docker.elastic.co/elasticsearch/elasticsearch:5.3.0
+docker pull docker.elastic.co/elasticsearch/elasticsearch:5.1.1
 docker pull kibana:5.3.0
 docker pull bwsw/tstreams-transaction-server
 echo ""
@@ -132,7 +112,7 @@ echo "#########################################"
 echo ""
 sleep 90
 echo ""
-sudo docker system prune -f
+#sudo docker system prune -f
 echo ""
 
 
@@ -151,7 +131,7 @@ curl --form jar=@/vagrant/sj-platform/core/sj-regular-streaming-engine/target/sc
 echo ""
 curl --form jar=@/vagrant/sj-platform/core/sj-output-streaming-engine/target/scala-2.12/sj-output-streaming-engine-$SJ_VERSION.jar http://$address/v1/custom/jars
 echo ""
-rm -rf /vagrant/sj-platform
+#rm -rf /vagrant/sj-platform
 echo ""
 
 
@@ -217,10 +197,6 @@ echo "##########################################"
 echo "DOWNLOAD MODULES                         #"
 echo "##########################################"
 echo ""
-#wget -O /vagrant/ps-output_2.12-1.0-SNAPSHOT.jar https://oss.sonatype.org/content/repositories/snapshots/com/bwsw/ps-output_2.12/1.0-SNAPSHOT/ps-output_2.12-1.0-SNAPSHOT.jar
-#echo ""
-#wget -O /vagrant/ps-process_2.12-1.0-SNAPSHOT.jar https://oss.sonatype.org/content/repositories/snapshots/com/bwsw/ps-process_2.12/1.0-SNAPSHOT/ps-process_2.12-1.0-SNAPSHOT.jar
-#echo ""
 wget -O /vagrant/sj-regex-input_$SCALA_VERSION-$SJ_VERSION.jar https://oss.sonatype.org/content/repositories/snapshots/com/bwsw/sj-regex-input_$SCALA_VERSION/$SJ_VERSION/sj-regex-input_$SCALA_VERSION-$SJ_VERSION.jar
 echo ""
 
@@ -266,7 +242,7 @@ curl --request POST "http://$address/v1/modules/output-streaming/pingstation-out
 echo ""
 curl --request PUT "http://0.0.0.0:9200/pingstation" -H 'Content-Type: application/json' --data "@/vagrant/sj-fping-demo/api-json/elasticsearch-index.json"
 echo ""
-rm -rf /vagrant/sj-fping-demo
+#rm -rf /vagrant/sj-fping-demo
 echo ""
 
 

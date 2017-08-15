@@ -46,13 +46,13 @@ services:
       - sj
     ports:
       - "5051:5051"
-      - "31500-32000:31500-32000"
+      - "31500-31550:31500-31550"
     environment:
       - MESOS_PORT=5051
       - MESOS_MASTER=zk://zookeeper:2181/mesos
       - MESOS_CONTAINERIZERS=docker,mesos
       - MESOS_LOG_DIR=/var/log/mesos
-      - MESOS_RESOURCES=cpus:4;mem:4096;disk:1024;ports:[31500-32000]
+      - MESOS_RESOURCES=cpus:4;mem:4096;disk:1024;ports:[31500-31550]
       - MESOS_WORK_DIR=/var/tmp/mesos
       - MESOS_HOSTNAME=192.168.172.17
       - MESOS_SLAVE_PARAMS="--launcher=posix"
