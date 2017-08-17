@@ -21,7 +21,11 @@ SCRIPT
 
 #---INSTALL_EXTRAS---
 $install_extras = <<SCRIPT
-
+sudo apt-get update
+sudo apt-get -y install openjdk-8-jdk
+sudo apt-get -y install openjdk-8*
+sudo apt-get clean
+sudo rm -rf /var/lib/apt/lists/*
 SCRIPT
 
 
@@ -129,100 +133,9 @@ sudo service mesos-slave restart
 SCRIPT
 
 
-#---EXECUTOR---
-$executor = <<SCRIPT
-#curl -s -X POST http://192.168.50.51:8080/v2/apps -H "Content-type: application/json" -d @services/mongo.json
-sleep 5
-#curl -s -X POST http://192.168.50.51:8080/v2/apps -H "Content-type: application/json" -d @services/elasticsearch.json
-curl -s -X POST http://192.168.50.51:8080/v2/apps -H "Content-type: application/json" -d @services/sj-rest.json
-sleep 5
-curl -s -X POST http://192.168.50.51:8080/v2/apps -H "Content-type: application/json" -d @services/kafka.json
-sleep 5
-#curl -s -X POST http://192.168.50.51:8080/v2/apps -H "Content-type: application/json" -d @servcies/kibana.json
-sleep 5
-curl -s -X POST http://192.168.50.51:8080/v2/apps -H "Content-type: application/json" -d @services/tts.json
-
-sleep 60
-
-address=192.168.50.52:8888
-
-curl -s --form jar=@sj-mesos-framework.jar http://$address/v1/custom/jars
-curl -s --form jar=@sj-input-streaming-engine.jar http://$address/v1/custom/jars
-curl -s --form jar=@sj-regular-streaming-engine.jar http://$address/v1/custom/jars
-curl -s --form jar=@sj-output-streaming-engine.jar http://$address/v1/custom/jars
-
-sleep 30
-
-curl -s --request POST "http://$address/v1/config/settings" -H 'Content-Type: application/json' --data @/vagrant/config/session-timeout
-sleep 2
-curl -s --request POST "http://$address/v1/config/settings" -H 'Content-Type: application/json' --data @/vagrant/config/current-framework
-sleep 2
-curl -s --request POST "http://$address/v1/config/settings" -H 'Content-Type: application/json' --data @/vagrant/config/crud-rest-host
-sleep 2
-curl -s --request POST "http://$address/v1/config/settings" -H 'Content-Type: application/json' --data @/vagrant/config/crud-rest-port
-sleep 2
-curl -s --request POST "http://$address/v1/config/settings" -H 'Content-Type: application/json' --data @/vagrant/config/marathon-connect
-sleep 2
-curl -s --request POST "http://$address/v1/config/settings" -H 'Content-Type: application/json' --data @/vagrant/config/marathon-connect-timeout
-sleep 2
-curl -s --request POST "http://$address/v1/config/settings" -H 'Content-Type: application/json' --data @/vagrant/config/kafka-subscriber-timeout
-sleep 2
-curl -s --request POST "http://$address/v1/config/settings" -H 'Content-Type: application/json' --data @/vagrant/config/low-watermark
-sleep 2
-curl -s --request POST "http://$address/v1/config/settings" -H 'Content-Type: application/json' --data @/vagrant/config/regular-streaming-validator-class
-sleep 2
-curl -s --request POST "http://$address/v1/config/settings" -H 'Content-Type: application/json' --data @/vagrant/config/input-streaming-validator-class
-sleep 2
-curl -s --request POST "http://$address/v1/config/settings" -H 'Content-Type: application/json' --data @/vagrant/config/output-streaming-validator-class
-SCRIPT
-
-
-#---LOAD---
-$load = <<SCRIPT
-address=192.168.50.52:8888
-curl -s --request POST "http://$address/v1/providers" -H 'Content-Type: application/json' --data "@api-json/providers/elasticsearch-ps-provider.json"
-sleep 2
-curl -s --request POST "http://$address/v1/providers" -H 'Content-Type: application/json' --data "@api-json/providers/kafka-ps-provider.json"
-sleep 2
-curl -s --request POST "http://$address/v1/providers" -H 'Content-Type: application/json' --data "@api-json/providers/zookeeper-ps-provider.json"
-sleep 2
-curl -s --request POST "http://$address/v1/services" -H 'Content-Type: application/json' --data "@api-json/services/elasticsearch-ps-service.json"
-sleep 2
-curl -s --request POST "http://$address/v1/services" -H 'Content-Type: application/json' --data "@api-json/services/kafka-ps-service.json"
-sleep 2
-curl -s --request POST "http://$address/v1/services" -H 'Content-Type: application/json' --data "@api-json/services/zookeeper-ps-service.json"
-sleep 2
-curl -s --request POST "http://$address/v1/services" -H 'Content-Type: application/json' --data "@api-json/services/tstream-ps-service.json"
-sleep 2
-curl -s --form jar=@sj-regex-input.jar http://$address/v1/modules
-sleep 2
-curl -s --form jar=@ps-process.jar http://$address/v1/modules
-sleep 2
-curl -s --form jar=@ps-output.jar http://$address/v1/modules
-sleep 2
-curl -s --request POST "http://$address/v1/streams" -H 'Content-Type: application/json' --data "@api-json/streams/echo-response.json"
-sleep 2
-curl -s --request POST "http://$address/v1/streams" -H 'Content-Type: application/json' --data "@api-json/streams/unreachable-response.json"
-sleep 2
-curl -s --request POST "http://$address/v1/streams" -H 'Content-Type: application/json' --data "@api-json/streams/echo-response-1m.json"
-sleep 2
-curl -s --request POST "http://$address/v1/streams" -H 'Content-Type: application/json' --data "@api-json/streams/es-echo-response-1m.json"
-sleep 2
-curl -s --request POST "http://$address/v1/streams" -H 'Content-Type: application/json' --data "@api-json/streams/fallback-response.json"
-sleep 2
-curl -s --request POST "http://$address/v1/modules/input-streaming/com.bwsw.input.regex/1.0/instance" -H 'Content-Type: application/json' --data "@api-json/instances/pingstation-input.json"
-sleep 2
-curl -s --request POST "http://$address/v1/modules/regular-streaming/pingstation-process/1.0/instance" -H 'Content-Type: application/json' --data "@api-json/instances/pingstation-echo-process.json"
-sleep 2
-curl -s --request POST "http://$address/v1/modules/output-streaming/pingstation-output/1.0/instance" -H 'Content-Type: application/json' --data "@api-json/instances/pingstation-output.json"
-sleep 2
-curl -s --request PUT "http://192.168.50.52:9200/pingstation" -H 'Content-Type: application/json' --data "@api-json/elasticsearch-index.json"
-SCRIPT
-
 
 
 Vagrant.configure("2") do |config|
-#  config.vm.box = "ubuntu/xenial64"
 
 #---MASTER_NODE---
   config.vm.define "master" do |master|
@@ -230,18 +143,22 @@ Vagrant.configure("2") do |config|
     master.ssh.username = "ubuntu"
     master.ssh.password = "cc8fbdab8070bf7bfeb44f55"
     master.vm.network "private_network", ip: "192.168.50.51"
+    master.vm.hostname = "master"
+    master.vm.provision "shell", inline: "echo 192.168.50.51 master master >> /etc/hosts"
+    master.vm.provision "shell", inline: "sudo tail -n +2 /etc/hosts | sudo tee /etc/hosts.tmp && sudo mv /etc/hosts.tmp /etc/hosts"
     master.vm.provision "shell", inline: $docker_install
+    master.vm.provision "shell", path: "scripts/master.sh"
+#    master.vm.provision "shell", inline: $master_script
     master.vm.provision "docker" do |d|
       d.pull_images "zookeeper"
       d.run "zookeeper", image: "zookeeper", args: "-e ZOO_MY_ID=1 -e ZOO_SERVERS=0.0.0.0:2888:3888 -p 2181:2181"
     end
-    master.vm.provision "shell", inline: $master_script
     master.vm.network :forwarded_port, guest: 2181, host: 2181, auto_correct: true
     master.vm.network :forwarded_port, guest: 5050, host: 5050, auto_correct: true
     master.vm.network :forwarded_port, guest: 8080, host: 8080, auto_correct: true
     master.vm.provider :virtualbox do |vb|
-      vb.cpus = 6
-      vb.memory = 4096
+      vb.cpus = 2
+      vb.memory = 2048
     end
   end
 
@@ -251,8 +168,12 @@ Vagrant.configure("2") do |config|
     slave1.ssh.username = "ubuntu"
     slave1.ssh.password = "cc8fbdab8070bf7bfeb44f55"
     slave1.vm.network "private_network", ip: "192.168.50.52"
+    slave1.vm.hostname = "slave1"
+    slave1.vm.provision "shell", inline: "echo 192.168.50.52 slave1 slave1 >> /etc/hosts"
+    slave1.vm.provision "shell", inline: "sudo tail -n +2 /etc/hosts | sudo tee /etc/hosts.tmp && sudo mv /etc/hosts.tmp /etc/hosts"
     slave1.vm.provision "shell", inline: $docker_install
-    slave1.vm.provision "shell", inline: $slave1_script
+#    slave1.vm.provision "shell", inline: $slave1_script
+    slave1.vm.provision "shell", path: "scripts/slave1.sh"
     slave1.vm.network :forwarded_port, guest: 5051, host: 5051, auto_correct: true
     slave1.vm.network :forwarded_port, guest: 8888, host: 8888, auto_correct: true
     slave1.vm.network :forwarded_port, guest: 9092, host: 9092, auto_correct: true
@@ -262,12 +183,13 @@ Vagrant.configure("2") do |config|
     slave1.vm.network :forwarded_port, guest: 9200, host: 9200, auto_correct: true
     slave1.vm.network :forwarded_port, guest: 9300, host: 9300, auto_correct: true
     slave1.vm.provision "docker" do |d|
-#      d.pull_images "mongo"
       d.pull_images "bwsw/sj-rest:dev"
       d.pull_images "ches/kafka"
       d.pull_images "docker.elastic.co/elasticsearch/elasticsearch:5.5.1"
       d.pull_images "kibana:5.5.1"
       d.pull_images "bwsw/tstreams-transaction-server"
+      d.run "elasticsearch", image: "docker.elastic.co/elasticsearch/elasticsearch:5.5.1", args: "--restart=always -p 9200:9200 -p 9300:9300 -e http.host=0.0.0.0 -e xpack.security.enabled=false -e transport.host=0.0.0.0 -e cluster.name=elasticsearch"
+      d.run "kibana", image: "kibana:5.5.1", args: "--restart=always -p 5601:5601 -e ELASTICSEARCH_URL=http://192.168.50.52:9200 -v kibana_data:/data"
     end
     slave1.vm.provider :virtualbox do |vb|
       vb.cpus = 3
@@ -283,8 +205,12 @@ Vagrant.configure("2") do |config|
     slave2.ssh.username = "ubuntu"
     slave2.ssh.password = "cc8fbdab8070bf7bfeb44f55"
     slave2.vm.network "private_network", ip: "192.168.50.53"
+    slave2.vm.hostname = "slave2"
+    slave2.vm.provision "shell", inline: "echo 192.168.50.53 slave2 slave2 >> /etc/hosts"
+    slave2.vm.provision "shell", inline: "sudo tail -n +2 /etc/hosts | sudo tee /etc/hosts.tmp && sudo mv /etc/hosts.tmp /etc/hosts"
     slave2.vm.provision "shell", inline: $docker_install
-    slave2.vm.provision "shell", inline: $slave2_script
+#    slave2.vm.provision "shell", inline: $slave2_script
+    slave2.vm.provision "shell", path: "scripts/slave2.sh"
     slave2.vm.network :forwarded_port, guest: 5052, host: 5052, auto_correct: true
     for i in 31500..31600
       slave2.vm.network :forwarded_port, guest: i, host: i, auto_correct: false
@@ -315,8 +241,8 @@ Vagrant.configure("2") do |config|
     ex.ssh.username = "ubuntu"
     ex.ssh.password = "cc8fbdab8070bf7bfeb44f55"
     ex.vm.network "private_network", ip: "192.168.50.54"
-    ex.vm.provision "shell", inline: $executor
-    ex.vm.provision "shell", inline: $load
+    ex.vm.provision "shell", path: "scripts/executor.sh"
+    ex.vm.provision "shell", path: "scripts/load.sh"
     ex.vm.provider :virtualbox do |vb|
       vb.cpus = 1
       vb.memory = 200
