@@ -16,7 +16,7 @@ sudo sh -c "echo manual > /etc/init/mesos-master.override"
 
 
 sudo touch /etc/mesos-slave/resources
-echo "cpus:2;mem:3072;disk:1024;ports:[31500-31600]" | sudo tee /etc/mesos-slave/resources
+echo "cpus:1;mem:1536;disk:1024;ports:[31500-31600]" | sudo tee /etc/mesos-slave/resources
 sudo touch /etc/mesos-slave/port
 echo 5052 | sudo tee /etc/mesos-slave/port
 sudo touch /etc/mesos-slave/containerizers
