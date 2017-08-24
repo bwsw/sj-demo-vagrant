@@ -1,0 +1,24 @@
+{  
+   "id":"kibana",
+   "container":{  
+      "type":"DOCKER",
+      "docker":{  
+         "image":"kibana:5.5.1",
+         "network":"BRIDGE",
+         "portMappings":[  
+            {  
+               "containerPort":5601,
+               "hostPort":5601,
+               "protocol":"tcp" 
+            }
+         ]
+      }
+   },
+   "constraints": [["hostname", "LIKE", "192.168.50.52"]],
+   "instances":1,
+   "cpus":0.1,
+   "mem":256,
+   "env":{  
+      "ELASTICSEARCH_URL":"http://192.168.50.52:9200"
+   }
+}

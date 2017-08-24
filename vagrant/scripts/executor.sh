@@ -7,7 +7,7 @@ curl -s -X POST http://192.168.50.51:8080/v2/apps -H "Content-type: application/
 sleep 5
 curl -s -X POST http://192.168.50.51:8080/v2/apps -H "Content-type: application/json" -d @services/kafka.json
 sleep 5
-#curl -s -X POST http://192.168.50.51:8080/v2/apps -H "Content-type: application/json" -d @servcies/kibana.json
+curl -s -X POST http://192.168.50.51:8080/v2/apps -H "Content-type: application/json" -d @servcies/kibana.json
 sleep 5
 curl -s -X POST http://192.168.50.51:8080/v2/apps -H "Content-type: application/json" -d @services/tts.json
 

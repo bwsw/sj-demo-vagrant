@@ -2,3 +2,4 @@
 .vagrant
 *.jar
 *.log
+.vagrant/

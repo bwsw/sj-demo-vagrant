@@ -1,0 +1,30 @@
+{  
+   "id":"kafka",
+   "container":{  
+      "type":"DOCKER",
+      "docker":{  
+         "image":"ches/kafka",
+         "network":"BRIDGE",
+         "portMappings":[  
+            {  
+               "containerPort":9092,
+               "hostPort":9092,
+               "protocol":"tcp" 
+            },
+        {  
+               "containerPort":7203,
+               "hostPort":7203,
+               "protocol":"tcp" 
+            }
+         ]
+      }
+   },
+   "constraints": [["hostname", "LIKE", "192.168.50.52"]],
+   "instances":1,
+   "cpus":0.1,
+   "mem":512,
+   "env":{  
+      "ZOOKEEPER_IP":"192.168.50.51",
+      "KAFKA_ADVERTIZEED_HOST_NAME":"kafka" 
+   }
+}
