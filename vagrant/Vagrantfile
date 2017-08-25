@@ -1,6 +1,10 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :a
 
+
+SJ_VERSION="1.0-SNAPSHOT"
+
+
 #---DOCKER_INSTALL---
 $docker_install = <<SCRIPT
 sudo apt-get update
@@ -113,7 +117,8 @@ Vagrant.configure("2") do |config|
 
 #---EXECUTOR_NODE---
   config.vm.define "executor" do |ex|
-    ex.vm.box = "ddpaimon/test"
+    ex.vm.box = "sj_files"
+    ex.vm.box_url = "http://c1-ftp1.netpoint-dc.com/sj/#{SJ_VERSION}/boxes/sj_files.box"
     ex.vm.provider :virtualbox do |vb|
           vb.cpus = 1
           vb.memory = 200
