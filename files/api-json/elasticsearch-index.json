@@ -1,0 +1,17 @@
+{
+  "settings" : {
+    "number_of_shards" : 1
+  },
+  "mappings" : {
+    "es-echo-response-1m" : {
+      "properties" : {
+        "ts" : { "type" : "date" },
+        "ip" : { "type" : "string" },
+        "avg-time" : { "type" : "double" },
+        "total-ok" : { "type" : "long" },
+        "total-unreachable" : { "type" : "long" },
+        "total" : { "type" : "long" }
+      }
+    }
+  }
+}

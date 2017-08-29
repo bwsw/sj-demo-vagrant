@@ -1,0 +1,11 @@
+{
+  "name": "echo-response-3m",
+  "description": "Tstream for demo",
+  "service": "tstream-ps-service",
+  "tags": [
+    "echo",
+    "output"
+  ],
+  "partitions": 1,
+  "type": "stream.t-streams"
+}

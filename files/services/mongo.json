@@ -1,0 +1,28 @@
+{  
+   "id":"mongo",
+   "container":{  
+      "type":"DOCKER",
+      "volumes": [
+        {
+          "containerPath": "/data/db",
+          "hostPath": "mongo_data",
+          "mode": "RW" 
+        }
+      ],
+      "docker":{  
+         "image":"mongo",
+         "network":"BRIDGE",
+         "portMappings":[  
+            {  
+               "containerPort":27017,
+               "hostPort":27017,
+               "protocol":"tcp" 
+            }
+         ]
+      }
+   },
+   "constraints": [["hostname", "LIKE", "192.168.50.52"]],
+   "instances":1,
+   "cpus":0.1,
+   "mem":512
+}  

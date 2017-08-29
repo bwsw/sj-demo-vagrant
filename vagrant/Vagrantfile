@@ -1,0 +1,132 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :a
+
+
+SJ_VERSION="1.0-SNAPSHOT"
+
+
+#---DOCKER_INSTALL---
+$docker_install = <<SCRIPT
+sudo apt-get update
+sudo apt-get -y install \
+  apt-transport-https \
+  ca-certificates \
+  curl
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable"
+sudo apt-get update
+sudo apt-get -y install docker-ce
+SCRIPT
+
+Vagrant.configure("2") do |config|
+
+  config.vm.boot_timeout = 600
+  config.ssh.insert_key = false
+  config.ssh.dsa_authentication = false
+
+#---MASTER_NODE---
+  config.vm.define "master" do |master|
+    master.vm.box = "bento/ubuntu-16.04"
+    master.vm.provider :virtualbox do |vb|
+      vb.cpus = 2
+      vb.memory = 1024
+    end
+    master.vm.network "private_network", ip: "192.168.50.51"
+    master.vm.hostname = "master"
+    master.vm.provision "shell", inline: "echo 192.168.50.51 master master >> /etc/hosts"
+    master.vm.provision "shell", inline: "sudo tail -n +2 /etc/hosts | sudo tee /etc/hosts.tmp && sudo mv /etc/hosts.tmp /etc/hosts"
+    master.vm.network :forwarded_port, guest: 2181, host: 2181, auto_correct: false
+    master.vm.network :forwarded_port, guest: 5050, host: 5050, auto_correct: false
+    master.vm.network :forwarded_port, guest: 8080, host: 8080, auto_correct: false
+    master.vm.provision "shell", inline: $docker_install
+    master.vm.provision "docker" do |d|
+      d.pull_images "zookeeper"
+      d.run "zookeeper", image: "zookeeper", args: "-e ZOO_MY_ID=1 -e ZOO_SERVERS=0.0.0.0:2888:3888 -p 2181:2181"
+    end
+    master.vm.provision "shell", path: "scripts/master.sh"
+  end
+
+#---SLAVE1_NODE---
+  config.vm.define "slave1" do |slave1|
+    slave1.vm.box = "bento/ubuntu-16.04"
+    slave1.vm.provider :virtualbox do |vb|
+      vb.cpus = 2
+      vb.memory = 3072
+    end
+    slave1.vm.network "private_network", ip: "192.168.50.52"
+    slave1.vm.hostname = "slave1"
+    slave1.vm.provision "shell", inline: "echo 192.168.50.52 slave1 slave1 >> /etc/hosts"
+    slave1.vm.provision "shell", inline: "sudo tail -n +2 /etc/hosts | sudo tee /etc/hosts.tmp && sudo mv /etc/hosts.tmp /etc/hosts"
+    slave1.vm.network :forwarded_port, guest: 5051, host: 5051, auto_correct: false
+    slave1.vm.network :forwarded_port, guest: 8888, host: 8888, auto_correct: false
+    slave1.vm.network :forwarded_port, guest: 9092, host: 9092, auto_correct: false
+    slave1.vm.network :forwarded_port, guest: 7203, host: 7203, auto_correct: false
+    slave1.vm.network :forwarded_port, guest: 31071, host: 31071, auto_correct: false
+    slave1.vm.network :forwarded_port, guest: 5601, host: 5601, auto_correct: false
+    slave1.vm.network :forwarded_port, guest: 9200, host: 9200, auto_correct: false
+    slave1.vm.network :forwarded_port, guest: 9300, host: 9300, auto_correct: false
+    slave1.vm.provision "shell", inline: $docker_install
+    slave1.vm.provision "shell", path: "scripts/slave1.sh"
+    slave1.vm.provision "shell", inline: "sudo sysctl -w vm.max_map_count=262144"
+    slave1.vm.provision "shell", inline: "echo vm.max_map_count = 262144 >> /etc/sysctl.conf && sysctl -p"
+    slave1.vm.provision "docker" do |d|
+      d.pull_images "bwsw/sj-rest:dev"
+      d.pull_images "ches/kafka"
+      d.pull_images "docker.elastic.co/elasticsearch/elasticsearch:5.5.1"
+      d.pull_images "kibana:5.5.1"
+      d.pull_images "bwsw/tstreams-transaction-server"
+      d.run "elasticsearch", image: "docker.elastic.co/elasticsearch/elasticsearch:5.5.1", args: "--restart=always -p 9200:9200 -p 9300:9300 -e ES_JAVA_OPTS=\"-Xms256m -Xmx256m\" -e http.host=0.0.0.0 -e xpack.security.enabled=false -e transport.host=0.0.0.0 -e cluster.name=elasticsearch"
+      d.run "kibana", image: "kibana:5.5.1", args: "--restart=always -p 5601:5601 -e ELASTICSEARCH_URL=http://192.168.50.52:9200 -v kibana_data:/data"
+    end
+  end
+
+#---SLAVE2_NODE---
+  config.vm.define "slave2" do |slave2|
+    slave2.vm.box = "bento/ubuntu-16.04"
+    slave2.vm.provider :virtualbox do |vb|
+          vb.cpus = 1
+          vb.memory = 2048
+        end
+    slave2.vm.network "private_network", ip: "192.168.50.53"
+    slave2.vm.network :forwarded_port, guest: 5052, host: 5052, auto_correct: true
+    for i in 31500..31600
+      slave2.vm.network :forwarded_port, guest: i, host: i, auto_correct: false
+    end
+    slave2.vm.hostname = "slave2"
+    slave2.vm.provision "shell", inline: "echo 192.168.50.53 slave2 slave2 >> /etc/hosts"
+    slave2.vm.provision "shell", inline: "sudo tail -n +2 /etc/hosts | sudo tee /etc/hosts.tmp && sudo mv /etc/hosts.tmp /etc/hosts"
+    slave2.vm.provision "shell", inline: $docker_install
+    slave2.vm.provision "shell", path: "scripts/slave2.sh"
+  end
+
+#---STORAGE_NODE---
+  config.vm.define "storage" do |storage|
+    storage.vm.box = "bento/ubuntu-16.04"
+    storage.vm.provider :virtualbox do |vb|
+          vb.cpus = 1
+          vb.memory = 512
+    end
+    storage.vm.network "private_network", ip: "192.168.50.55"
+    storage.vm.network :forwarded_port, guest: 27017, host: 27017, auto_correct: false
+    storage.vm.provision "shell", inline: $docker_install
+    storage.vm.provision "docker" do |d|
+      d.pull_images "mongo"
+      d.run "mongo", image: "mongo", args: "-p 27017:27017 --memory 512MB -v mongo_data:/data/db"
+    end
+  end
+
+#---EXECUTOR_NODE---
+  config.vm.define "executor" do |ex|
+    ex.vm.box = "sj_files"
+    ex.vm.box_url = "http://c1-ftp1.netpoint-dc.com/sj/#{SJ_VERSION}/boxes/sj_files.box"
+    ex.vm.provider :virtualbox do |vb|
+          vb.cpus = 1
+          vb.memory = 200
+          vb.customize [ "modifyvm", :id, "--uartmode1", "disconnected" ]
+    end
+    ex.vm.network "private_network", ip: "192.168.50.54"
+    ex.vm.provision "shell", path: "scripts/executor.sh"
+    ex.vm.provision "shell", path: "scripts/load.sh"
+  end
+
+end

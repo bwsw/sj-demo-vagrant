@@ -1,0 +1,8 @@
+{
+  "name": "tstream-ps-service",
+  "description": "Tstream service for demo",
+  "type": "service.t-streams",
+  "provider": "zookeeper-ps-provider",
+  "prefix": "/pingstation",
+  "token" : "pingstation"
+}

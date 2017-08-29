@@ -36,6 +36,7 @@ List of used ports: \
 5601 - Kibana \
 3000-3003 - Aerospike \
 9042 - Cassandra \
-9092,7203 - Kafka
+9092,7203 - Kafka \
+31071 - TStreams Transaction Server
 
 You can change ports by editing Vagrantfile.

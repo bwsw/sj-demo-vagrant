@@ -1,0 +1,26 @@
+{  
+   "id":"sj-rest",
+   "container":{  
+      "type":"DOCKER",
+      "docker":{  
+         "image":"bwsw/sj-rest:dev",
+         "network":"BRIDGE",
+         "portMappings":[  
+            {  
+               "containerPort":8080,
+               "hostPort":8888,
+               "protocol":"tcp" 
+            }
+         ]
+      }
+   },
+   "constraints": [["hostname", "LIKE", "192.168.50.52"]],
+   "instances":1,
+   "cpus":0.1,
+   "mem":1024,
+   "env":{
+      "MONGO_HOSTS":"192.168.50.55:27017",
+      "ZOOKEEPER_HOST":"192.168.50.51",
+      "ZOOKEEPER_PORT":"2181" 
+   }
+}

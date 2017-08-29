@@ -1,0 +1,10 @@
+{
+  "name": "es-echo-response-3m",
+  "description": "ES stream for demo",
+  "service": "elasticsearch-ps-service",
+  "tags": [
+    "ping",
+    "stattion"
+  ],
+  "type": "stream.elasticsearch"
+}

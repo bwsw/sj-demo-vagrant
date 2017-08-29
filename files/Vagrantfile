@@ -1,0 +1,17 @@
+Vagrant.configure("2") do |config|
+  config.vm.box = "bento/ubuntu-16.04"
+  config.vm.define "sj_files" do |base_mesos|
+  end
+  config.vm.provider :virtualbox do |vb|
+    vb.name = "sj_files"
+  end
+  config.vm.provision "file", source: "./ps-output.jar", destination: "ps-output.jar"
+  config.vm.provision "file", source: "./ps-process.jar", destination: "ps-process.jar"
+  config.vm.provision "file", source: "./sj-input-streaming-engine.jar", destination: "sj-input-streaming-engine.jar"
+  config.vm.provision "file", source: "./sj-mesos-framework.jar", destination: "sj-mesos-framework.jar"
+  config.vm.provision "file", source: "./sj-output-streaming-engine.jar", destination: "sj-output-streaming-engine.jar"
+  config.vm.provision "file", source: "./sj-regex-input.jar", destination: "sj-regex-input.jar"
+  config.vm.provision "file", source: "./sj-regular-streaming-engine.jar", destination: "sj-regular-streaming-engine.jar"
+  config.vm.provision "file", source: "./api-json", destination: "api-json"
+  config.vm.provision "file", source: "./services", destination: "services"
+end

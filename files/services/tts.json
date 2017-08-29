@@ -1,0 +1,32 @@
+{
+    "id": "tts",
+    "container": {
+        "type": "DOCKER",
+        "volumes": [
+            {
+                "containerPath": "/tmp/config.properties",
+                "hostPath": "/vagrant/config.properties",
+                "mode": "RO" 
+            }
+        ],
+        "docker": {
+            "image": "bwsw/tstreams-transaction-server",
+            "network": "BRIDGE",
+            "portMappings": [
+                {
+                    "containerPort": 8080,
+                    "hostPort": 31071,
+                    "protocol": "tcp" 
+                }
+            ]
+        }
+    },
+    "constraints": [["hostname", "LIKE", "192.168.50.52"]],
+    "instances": 1,
+    "cpus": 0.1,
+    "mem": 512,
+    "env": {
+      "HOST":"192.168.50.52",
+      "PORT0":"31071" 
+    }
+}
