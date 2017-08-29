@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 
-#curl -s -X POST http://192.168.50.51:8080/v2/apps -H "Content-type: application/json" -d @services/mongo.json
-#sleep 5
-#curl -s -X POST http://192.168.50.51:8080/v2/apps -H "Content-type: application/json" -d @services/elasticsearch.json
+curl -s -X POST http://192.168.50.51:8080/v2/apps -H "Content-type: application/json" -d @services/mongo.json
+sleep 5
+curl -s -X POST http://192.168.50.51:8080/v2/apps -H "Content-type: application/json" -d @services/elasticsearch.json
 curl -s -X POST http://192.168.50.51:8080/v2/apps -H "Content-type: application/json" -d @services/sj-rest.json
 sleep 5
 curl -s -X POST http://192.168.50.51:8080/v2/apps -H "Content-type: application/json" -d @services/kafka.json
 sleep 5
-#curl -s -X POST http://192.168.50.51:8080/v2/apps -H "Content-type: application/json" -d @servcies/kibana.json
-#sleep 5
+curl -s -X POST http://192.168.50.51:8080/v2/apps -H "Content-type: application/json" -d @servcies/kibana.json
+sleep 5
 curl -s -X POST http://192.168.50.51:8080/v2/apps -H "Content-type: application/json" -d @services/tts.json
 
 sleep 30

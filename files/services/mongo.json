@@ -21,8 +21,8 @@
          ]
       }
    },
-   "constraints": [["hostname", "LIKE", "192.168.50.52"]],
+   "constraints": [["hostname", "LIKE", "192.168.50.55"]],
    "instances":1,
    "cpus":0.1,
-   "mem":512
+   "mem":768
 }  

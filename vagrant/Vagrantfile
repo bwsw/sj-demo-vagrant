@@ -75,8 +75,6 @@ Vagrant.configure("2") do |config|
       d.pull_images "docker.elastic.co/elasticsearch/elasticsearch:5.5.1"
       d.pull_images "kibana:5.5.1"
       d.pull_images "bwsw/tstreams-transaction-server"
-      d.run "elasticsearch", image: "docker.elastic.co/elasticsearch/elasticsearch:5.5.1", args: "--restart=always -p 9200:9200 -p 9300:9300 -e ES_JAVA_OPTS=\"-Xms256m -Xmx256m\" -e http.host=0.0.0.0 -e xpack.security.enabled=false -e transport.host=0.0.0.0 -e cluster.name=elasticsearch"
-      d.run "kibana", image: "kibana:5.5.1", args: "--restart=always -p 5601:5601 -e ELASTICSEARCH_URL=http://192.168.50.52:9200 -v kibana_data:/data"
     end
   end
 
@@ -104,14 +102,14 @@ Vagrant.configure("2") do |config|
     storage.vm.box = "bento/ubuntu-16.04"
     storage.vm.provider :virtualbox do |vb|
           vb.cpus = 1
-          vb.memory = 512
+          vb.memory = 768
     end
     storage.vm.network "private_network", ip: "192.168.50.55"
     storage.vm.network :forwarded_port, guest: 27017, host: 27017, auto_correct: false
     storage.vm.provision "shell", inline: $docker_install
+    storage.vm.provision "shell", path: "scripts/storage.sh"
     storage.vm.provision "docker" do |d|
       d.pull_images "mongo"
-      d.run "mongo", image: "mongo", args: "-p 27017:27017 --memory 512MB -v mongo_data:/data/db"
     end
   end
 
