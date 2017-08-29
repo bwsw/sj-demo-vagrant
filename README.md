@@ -4,7 +4,7 @@ At first install vagrant and virtualbox. You can do it by official instruction: 
 Clone git repository:
 ```
 git clone https://github.com/bwsw/sj-demo-vagrant.git
-cd sj-demo-vagrant
+cd sj-demo-vagrant/vagrant
 ```
 
 Launch vagrant:
