@@ -23,10 +23,11 @@
      "http.host": "0.0.0.0",
      "xpack.security.enabled": "false",
      "transport.host": "0.0.0.0",
-     "cluster.name": "elasticsearch"
+     "cluster.name": "elasticsearch",
+     "ES_JAVA_OPTS": "-Xms256m -Xmx256m"
    },
    "constraints": [["hostname", "LIKE", "192.168.50.52"]],
    "instances":1,
    "cpus":0.2,
-   "mem":256
+   "mem":384
 }
