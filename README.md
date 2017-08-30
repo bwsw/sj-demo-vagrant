@@ -61,13 +61,13 @@ vagrant destroy
 ```
 
 ## Description
-Vagrant create five ubuntu/xenial64 VMs.
-All VMs launched in private network 192.168.50.0
-Also you can access vm with vagrant ssh <name>
+Vagrant create five ubuntu/xenial64 VMs. <br />
+All VMs launched in private network 192.168.50.0 <br />
+Also you can access vm with vagrant ssh <name> <br />
 
-Master VM:
-name = master
-hostname = master
+Master VM: <br />
+name = master <br />
+hostname = master <br />
 Resources: 
 - 2 cpus 
 - 1GB memory
@@ -82,9 +82,9 @@ After VM launched, vagrant installs docker engine and firstly runs zookeeper in 
 Next, launches mesos-master service with following configuration: ip=0.0.0.0, advertise_ip=192.168.50.51, hostname=192.168.50.51, zk=zk://192.168.50.51:2181/mesos. 
 Next, launches marathon service with following configuration: hostname=192.168.50.51, master=zk://192.168.50.51:2181/mesos, zk=zk://192.168.50.51:2181/marathon.
 
-Slave1 VM:
-name = slave1
-hostname = slave1
+Slave1 VM: <br /> 
+name = slave1 <br />
+hostname = slave1 <br />
 Resources:
 - 2 cpus
 - 3GB memory
@@ -101,9 +101,9 @@ Note:
 After VM launched, vagrant firstly launches mesos-slave with following configuration: ip=0.0.0.0, advertise_ip=192.168.50.52, hostname=192.168.50.52, zk=zk://192.168.50.51:2181/mesos, ports=forwarded ports.
 Next installs docker engine and launches elasticsearch and kibana in docker.
 
-Slave2 VM:
-name = slave2
-hostname = slave2
+Slave2 VM: <br />
+name = slave2 <br />
+hostname = slave2 <br />
 Resources:
 - 1 cpus
 - 2GB memory
@@ -115,8 +115,8 @@ Note:
 After VM launched, vagrant firstly launches mesos-slave with following configuration: ip=0.0.0.0, advertise_ip=192.168.50.53, hostname=192.168.50.53, zk=zk://192.168.50.51:2181/mesos, ports=forwarded ports.
 Next installs docker engine.
 
-Storage VM:
-name = storage
+Storage VM: <br />
+name = storage <br />
 Resource:
 - 1 cpus
 - 512MB memory
@@ -127,8 +127,8 @@ Srevices:
 Note:
 After VM launched, vagrant firstly installs docker engine and launches mongo in docker.
 
-Executor VM:
-name = executor
+Executor VM: <br />
+name = executor <br />
 Resource:
 - 1 cpus
 - 200MB memory
@@ -139,14 +139,14 @@ This VM used to launch services and create entities.
 After VM launched, vagrant firstly launches services on marathon: sj-rest, kafka, tts.
 After services launched, vagrant creates all entities via sj-rest.
 
-List of used ports:
-8080 - Marathon
-5050 - Master
-5051 - Agent
-8888 - SJ Rest
-27017 - Mongo
-2181 - Zookeeper
-9200,9300 - Elasticsearch
-5601 - Kibana
-9092,7203 - Kafka 
-31071 - T-streams Transaction Server
+List of used ports: <br />
+8080 - Marathon <br />
+5050 - Master <br />
+5051 - Agent <br />
+8888 - SJ Rest <br />
+27017 - Mongo <br />
+2181 - Zookeeper <br />
+9200,9300 - Elasticsearch <br />
+5601 - Kibana <br />
+9092,7203 - Kafka <br />
+31071 - T-streams Transaction Server <br />
