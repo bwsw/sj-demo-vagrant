@@ -44,7 +44,7 @@ Ubuntu 16.04/17.04 <br />
 Clone git repository
 ```
 $ git clone https://github.com/bwsw/sj-demo-vagrant.git
-$ cd sj-demo-vagrant
+$ cd sj-demo-vagrant/vagrant
 ```
 Launch vagrant:
 ```
