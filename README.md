@@ -119,7 +119,7 @@ Storage VM: <br />
 name = storage <br />
 Resource:
 - 1 cpus
-- 512MB memory
+- 768MB memory
 - ip = 192.168.50.55
 - forwarded ports: 27017
 Srevices:
