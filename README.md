@@ -1,42 +1,152 @@
-### Deploy SJ via Vagrant
+# Deploy SJ via Vagrant
+
+## Required
+At least 8GB free ram.
+Be careful, this is minimal memory require to launch platform.
+
+VT-x must be enabled in bios.
+
+To determine if cpu vt extensions are enabled in bios, do following:
+
+1) Install cpu-checker
+```
+$ sudo apt-get update
+$ sudo apt-get install cpu-checker
+```
+2) Then check:
+```
+$ kvm-ok
+```
+3) If the CPU is enabled, you should see something like:
+```
+INFO: /dev/kvm exists
+KVM acceleration can be used
+```
+4) Otherwise, you might see something like:
+```
+INFO: /dev/kvm does not exist
+HINT:   sudo modprobe kvm_intel
+INFO: Your CPU supports KVM extensions
+INFO: KVM (vmx) is disabled by your BIOS
+HINT: Enter your BIOS setup and enable Virtualization Technology (VT),
+      and then hard poweroff/poweron your system
+KVM acceleration can NOT be used
+```
+## Prerequisite
 At first install vagrant and virtualbox. You can do it by official instruction: https://www.vagrantup.com/docs/installation/ and https://www.virtualbox.org/wiki/Downloads
 
-Clone git repository:
-```
-git clone https://github.com/bwsw/sj-demo-vagrant.git
-cd sj-demo-vagrant/vagrant
-```
+Checked with:
+Vagrant 1.9.7
+VirtualBox 5.0.40
+Ubuntu 16.04/17.04
 
+## Launch
+Clone git repository
+```
+$ git clone https://github.com/bwsw/sj-demo-vagrant.git
+$ cd sj-demo-vagrant
+```
 Launch vagrant:
 ```
 vagrant up
 ```
+It takes up to half an hour, 8GB mem and 7 cpus
 
-At the end of deploying you can see urls on all services.
+At the end of deploying you can see urls of all services.
 
+## Destroy
 To destroy vagrant use:
 ```
 vagrant destroy
 ```
 
-Also you can turn it off and after a while turn it on again. All services will work.
+## Description
+Vagrant create five ubuntu/xenial64 VMs.
+All VMs launched in private network 192.168.50.0
+Also you can access vm with vagrant ssh <name>
 
-### Description
-Vagrant create ubuntu/xenial64 VM with 4 cpus, 8 GB memory and 10 GB disk space.
-In VM launching mesos with all required services on docker swarm via docker stack deploy.
+Master VM:
+name = master
+hostname = master
+Resources: 
+- 2 cpus 
+- 1GB memory
+- ip = 192.168.50.51
+- forwarded ports: 2181, 5050, 8080
+Services:
+- zookeeper
+- master
+- marathon
+Note:
+After VM launched, vagrant installs docker engine and firstly runs zookeeper in docker. 
+Next, launches mesos-master service with following configuration: ip=0.0.0.0, advertise_ip=192.168.50.51, hostname=192.168.50.51, zk=zk://192.168.50.51:2181/mesos. 
+Next, launches marathon service with following configuration: hostname=192.168.50.51, master=zk://192.168.50.51:2181/mesos, zk=zk://192.168.50.51:2181/marathon.
 
-List of used ports: \
-8080 - Marathon \
-5050 - Master \
-5051 - Agent \
-8888 - SJ Rest \
-27017 - Mongo \
-2181 - Zookeeper \
-9200,9300 - Elasticsearch \
-5601 - Kibana \
-3000-3003 - Aerospike \
-9042 - Cassandra \
-9092,7203 - Kafka \
-31071 - TStreams Transaction Server
+Slave1 VM:
+name = slave1
+hostname = slave1
+Resources:
+- 2 cpus
+- 3GB memory
+- ip = 192.168.50.52
+- forwarded ports: 5051, 8888, 9092, 7203, 31071, 5601, 9200, 9300
+Services:
+- mesos-slave
+- elasticsearch
+- kibana
+- sj-rest
+- t-streams transaction server
+- kafka
+Note:
+After VM launched, vagrant firstly launches mesos-slave with following configuration: ip=0.0.0.0, advertise_ip=192.168.50.52, hostname=192.168.50.52, zk=zk://192.168.50.51:2181/mesos, ports=forwarded ports.
+Next installs docker engine and launches elasticsearch and kibana in docker.
 
-You can change ports by editing Vagrantfile.
+Slave2 VM:
+name = slave2
+hostname = slave2
+Resources:
+- 1 cpus
+- 2GB memory
+- ip = 192.168.50.53
+- forwarded ports: 31500 - 31600
+Services:
+- mesos-slave
+Note:
+After VM launched, vagrant firstly launches mesos-slave with following configuration: ip=0.0.0.0, advertise_ip=192.168.50.53, hostname=192.168.50.53, zk=zk://192.168.50.51:2181/mesos, ports=forwarded ports.
+Next installs docker engine.
+
+Storage VM:
+name = storage
+Resource:
+- 1 cpus
+- 512MB memory
+- ip = 192.168.50.55
+- forwarded ports: 27017
+Srevices:
+- mongo
+Note:
+After VM launched, vagrant firstly installs docker engine and launches mongo in docker.
+
+Executor VM:
+name = executor
+Resource:
+- 1 cpus
+- 200MB memory
+- ip = 192.168.50.54
+- forwarded ports: 
+Note:
+This VM used to launch services and create entities.
+After VM launched, vagrant firstly launches services on marathon: sj-rest, kafka, tts.
+After services launched, vagrant creates all entities via sj-rest.
+
+List of used ports:
+8080 - Marathon
+5050 - Master
+5051 - Agent
+8888 - SJ Rest
+27017 - Mongo
+2181 - Zookeeper
+9200,9300 - Elasticsearch
+5601 - Kibana
+9092,7203 - Kafka 
+31071 - T-streams Transaction Server
