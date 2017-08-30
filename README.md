@@ -1,7 +1,7 @@
 # Deploy SJ via Vagrant
 
 ## Required
-At least 8GB free ram.
+At least 8GB free ram. <br />
 Be careful, this is minimal memory require to launch platform.
 
 VT-x must be enabled in bios.
@@ -35,10 +35,10 @@ KVM acceleration can NOT be used
 ## Prerequisite
 At first install vagrant and virtualbox. You can do it by official instruction: https://www.vagrantup.com/docs/installation/ and https://www.virtualbox.org/wiki/Downloads
 
-Checked with:
-Vagrant 1.9.7
-VirtualBox 5.0.40
-Ubuntu 16.04/17.04
+Checked with: <br />
+Vagrant 1.9.7 <br />
+VirtualBox 5.0.40 <br />
+Ubuntu 16.04/17.04 <br />
 
 ## Launch
 Clone git repository
